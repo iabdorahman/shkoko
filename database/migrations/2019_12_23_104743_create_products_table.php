@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('image')->default('product.png');
             $table->string('details')->nullable();
             $table->integer('price');
-            $table->string('type')->enum('dish','sandwich','additions');
+            $table->enum('type', ['dish', 'sandwich', 'additions']);
             $table->timestamps();
         });
     }

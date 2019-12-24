@@ -14,7 +14,10 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        // get all products
+        $products = Product::all();
+        return view('admin.products.index', compact('products'));
+
     }
 
     /**
@@ -24,7 +27,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        // redirect to create page
+        return view('admin.products.create');
     }
 
     /**
@@ -35,7 +39,27 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate Create Form
+        $newProduct = request()->validate([
+            'name' => 'required|max:100',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // mime types and max size: 2mb
+            'details' => 'required|max:300',
+            'price' => 'required|numeric',
+            'type' => 'in:dish,sandwich,additions',
+            ]);
+        
+        $imageName = time().'.'.$request->image->extension(); // image name saved to ignore repeated name "unique_image_name"
+        $request->image->move(public_path('storage/images'), $imageName); // save image with new name in folder $images
+        // create new product
+        $newProduct = new Product;
+        $newProduct->name = $request->name;
+        $newProduct->image = $imageName; // customized image name
+        $newProduct->details = $request->details;
+        $newProduct->price = $request->price;
+        $newProduct->type = $request->type;
+        $newProduct->save();
+        return redirect('admin/product')->withSuccessMessage("Product added successfully." );
+
     }
 
     /**
@@ -44,9 +68,10 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::find($id);
+        return view('admin.products.show', compact('product'));
     }
 
     /**
@@ -55,9 +80,10 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit($id)
     {
-        //
+        $product = Product::find($id);
+        return view('admin.products.edit', compact('product'));
     }
 
     /**
@@ -67,9 +93,32 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        // Validate Edit Form
+        $updateProduct = request()->validate([
+            'name' => 'required|max:100',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // mime types and max size: 2mb
+            'details' => 'required|max:300',
+            'price' => 'required|numeric',
+            'type' => 'in:dish,sandwich,additions',
+            ]);
+        
+        $updateProduct = Product::find($id); // retrive the record to update it.
+        $oldImage = $updateProduct->image; // save old image path to delete it when update done successfully.
+        $updateProduct->name = $request->name;
+        $updateProduct->image = $imageName; // customized image name
+        $updateProduct->details = $request->details;
+        $updateProduct->price = $request->price;
+        $updateProduct->type = $request->type;
+        $updateProduct->save();
+
+        // when update done successfully delete the old image.
+        if(\File::exists(public_path("storage/image/$oldImage"))){
+            \File::delete(public_path("storage/image/$oldImage"));
+        }
+
+        return redirect('admin/product')->withSuccessMessage('success', "Product updated successfully.");
     }
 
     /**
@@ -78,8 +127,11 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $deleteProduct = Product::find($id);
+        $productName = $deleteProduct->name;
+        $deleteProduct->delete();
+        return redirect('admin/product')->withSuccessMessage("Product has been deleted");
     }
 }

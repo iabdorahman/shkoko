@@ -1,3 +1,5 @@
+
+
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -29,7 +31,9 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
+                <a class="navbar-brand" href="{{ url('/admin/product') }}">
+                    Products
+                </a>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
@@ -76,5 +80,7 @@
             @yield('content')
         </main>
     </div>
+    {{-- include sweet alert --}}
+    @include('sweetalert::alert')
 </body>
 </html>
