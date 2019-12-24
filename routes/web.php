@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// return AdminLTE
+Route::get('admin', function () {
+    return view('admin_template');
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
