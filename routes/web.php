@@ -15,9 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// return AdminLTE
-Route::get('admin', function () {
-    return view('admin_template');
+
+// return index
+Route::get('index', function () {
+    return view('shkoko.index');
 });
 
 Auth::routes();
