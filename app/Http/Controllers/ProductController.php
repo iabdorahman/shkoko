@@ -58,7 +58,7 @@ class ProductController extends Controller
         $newProduct->price = $request->price;
         $newProduct->type = $request->type;
         $newProduct->save();
-        return redirect('admin/product')->withSuccessMessage("Product added successfully." );
+        return redirect('admin/products')->withSuccessMessage("Product added successfully." );
 
     }
 
